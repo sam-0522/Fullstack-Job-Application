@@ -224,7 +224,7 @@ Retrieve a paginated list of all job applications with optional filtering.
       "candidateEmail": "john.doe@example.com",
       "resumeUrl": "https://example.com/resumes/john-doe.pdf",
       "coverLetter": "I am excited to apply...",
-      "createdAt": "2024-01-16T14:20:00.000Z"
+      "appliedAt": "2024-01-16T14:20:00.000Z"
     }
   ]
 }
@@ -259,7 +259,7 @@ Retrieve details of a specific application.
     "candidateEmail": "john.doe@example.com",
     "resumeUrl": "https://example.com/resumes/john-doe.pdf",
     "coverLetter": "I am excited to apply...",
-    "createdAt": "2024-01-16T14:20:00.000Z"
+    "appliedAt": "2024-01-16T14:20:00.000Z"
   }
 }
 ```
@@ -304,7 +304,7 @@ Submit a new job application.
     "candidateEmail": "john.doe@example.com",
     "resumeUrl": "https://example.com/resumes/john-doe.pdf",
     "coverLetter": "I am excited to apply...",
-    "createdAt": "2024-01-16T14:20:00.000Z"
+    "appliedAt": "2024-01-16T14:20:00.000Z"
   }
 }
 ```

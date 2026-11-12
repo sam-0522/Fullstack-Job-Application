@@ -37,7 +37,7 @@ router.get('/', async (req, res, next) => {
 
     const applications = await Application.find(query)
       .populate('job', 'title department location')
-      .sort({ createdAt: -1 })
+      .sort({ appliedAt: -1 })
       .limit(parseInt(limit))
       .skip(skip);
 

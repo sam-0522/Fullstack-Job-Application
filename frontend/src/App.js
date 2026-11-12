@@ -23,7 +23,8 @@ function App() {
   const fetchJobs = async () => {
     try {
       const res = await axios.get(config.backendUrl + '/api/jobs');
-      setJobs(res.data);
+      const jobs = res?.data?.data;
+      setJobs(Array.isArray(jobs) ? jobs : []);
     } catch (error) {
       console.error('Error fetching jobs', error);
     }
@@ -44,7 +45,7 @@ function App() {
   };
 
   const handleJobPosted = (newJob) => {
-    setJobs([newJob, ...jobs]);
+    setJobs((previousJobs) => [newJob, ...previousJobs]);
     setView('list');
   };
 
