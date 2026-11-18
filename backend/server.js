@@ -31,13 +31,26 @@ app.use(
 );
 
 // CORS Configuration
+// CORS Configuration
+const configuredOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
+  : [];
+
+const allowedOrigins = [
+  ...new Set([
+    ...configuredOrigins,
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:5173',
+  ]),
+];
+
 const corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:5173'],
+  origin: allowedOrigins,
   credentials: true,
   optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
 // Request Logging
@@ -67,6 +80,8 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Routes
+// Routes
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/api/applications', require('./routes/applications'));
 

@@ -11,9 +11,19 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import Chip from '@mui/material/Chip';
 
-const JobList = ({ jobs, onJobSelect, onApplyClick }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import BusinessCenterOutlinedIcon from '@mui/icons-material/BusinessCenterOutlined';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+const JobList = ({
+  jobs,
+  searchTerm,
+  onSearchTermChange,
+  onJobSelect,
+  onApplyClick
+}) => {
   const [selectedType, setSelectedType] = useState('All');
   const [sortOrder, setSortOrder] = useState('newest');
 
@@ -28,8 +38,15 @@ const JobList = ({ jobs, onJobSelect, onApplyClick }) => {
     const matchingJobs = jobs.filter((job) => {
       const matchesSearch =
         !search ||
-        [job.title, job.location, job.department, job.description]
-          .some((value) => value?.toLowerCase().includes(search));
+        [
+          job.title,
+          job.location,
+          job.department,
+          job.description,
+          job.type
+        ].some((value) =>
+          value?.toLowerCase().includes(search)
+        );
 
       const matchesType =
         selectedType === 'All' || job.type === selectedType;
@@ -39,11 +56,17 @@ const JobList = ({ jobs, onJobSelect, onApplyClick }) => {
 
     return [...matchingJobs].sort((a, b) => {
       if (sortOrder === 'newest') {
-        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+        return (
+          new Date(b.createdAt || 0) -
+          new Date(a.createdAt || 0)
+        );
       }
 
       if (sortOrder === 'oldest') {
-        return new Date(a.createdAt || 0) - new Date(b.createdAt || 0);
+        return (
+          new Date(a.createdAt || 0) -
+          new Date(b.createdAt || 0)
+        );
       }
 
       if (sortOrder === 'title') {
@@ -54,114 +77,134 @@ const JobList = ({ jobs, onJobSelect, onApplyClick }) => {
     });
   }, [jobs, searchTerm, selectedType, sortOrder]);
 
-  if (!jobs || jobs.length === 0) {
-    return (
-      <Typography variant="body1" sx={{ mt: 3, textAlign: 'center' }}>
-        No jobs available at the moment.
-      </Typography>
-    );
-  }
-
   return (
-    <Box>
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        Explore Job Opportunities
-      </Typography>
+    <Box className="job-list-container">
 
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Search jobs"
-            placeholder="Search by title, location or department"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Grid>
+      <Box className="job-filters">
+        <TextField
+          fullWidth
+          label="Search jobs"
+          placeholder="Search by title, skill or location"
+          value={searchTerm}
+          onChange={(event) =>
+            onSearchTermChange(event.target.value)
+          }
+        />
 
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            fullWidth
-            select
-            label="Filter by Job Type"
-            value={selectedType}
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
-            {jobTypes.map((type) => (
-              <MenuItem key={type} value={type}>
-                {type === 'All' ? 'All Job Types' : type}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
+        <TextField
+          fullWidth
+          select
+          label="Job type"
+          value={selectedType}
+          onChange={(event) =>
+            setSelectedType(event.target.value)
+          }
+        >
+          {jobTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+              {type === 'All' ? 'All Job Types' : type}
+            </MenuItem>
+          ))}
+        </TextField>
 
-        <Grid item xs={12} sm={6} md={3}>
-          <TextField
-            fullWidth
-            select
-            label="Sort Jobs"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <MenuItem value="newest">Newest First</MenuItem>
-            <MenuItem value="oldest">Oldest First</MenuItem>
-            <MenuItem value="title">Title (A-Z)</MenuItem>
-          </TextField>
-        </Grid>
-      </Grid>
+        <TextField
+          fullWidth
+          select
+          label="Sort by"
+          value={sortOrder}
+          onChange={(event) =>
+            setSortOrder(event.target.value)
+          }
+        >
+          <MenuItem value="newest">Newest First</MenuItem>
+          <MenuItem value="oldest">Oldest First</MenuItem>
+          <MenuItem value="title">Title (A-Z)</MenuItem>
+        </TextField>
+      </Box>
 
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Showing {filteredJobs.length} of {jobs.length} jobs
+      <Typography className="job-count">
+        Showing <strong>{filteredJobs.length}</strong> of{' '}
+        <strong>{jobs.length}</strong> jobs
       </Typography>
 
       {filteredJobs.length === 0 ? (
-        <Typography variant="body1" sx={{ mt: 3, textAlign: 'center' }}>
-          No matching jobs found. Try another search or filter.
-        </Typography>
+        <Box className="empty-jobs">
+          <BusinessCenterOutlinedIcon />
+          <Typography variant="h6">
+            No matching jobs found
+          </Typography>
+          <Typography color="text.secondary">
+            Try another keyword or change your filters.
+          </Typography>
+          <Button
+            onClick={() => {
+              onSearchTermChange('');
+              setSelectedType('All');
+            }}
+          >
+            Clear filters
+          </Button>
+        </Box>
       ) : (
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {filteredJobs.map((job) => (
             <Grid item xs={12} sm={6} md={4} key={job._id}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-              >
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" gutterBottom>
+              <Card className="job-card">
+
+                <CardContent className="job-card-content">
+                  <Box className="job-card-top">
+                    <Box className="company-placeholder">
+                      {(job.title || 'J').charAt(0).toUpperCase()}
+                    </Box>
+
+                    <Chip
+                      label={job.type || 'Job'}
+                      size="small"
+                      className="job-type-chip"
+                    />
+                  </Box>
+
+                  <Typography
+                    variant="h6"
+                    className="job-card-title"
+                  >
                     {job.title}
                   </Typography>
 
-                  <Typography variant="body2" color="text.secondary">
-                    {job.location}
+                  <Typography className="job-company">
+                    {job.department || 'Career Opportunity'}
                   </Typography>
 
-                  <Typography variant="body2" color="text.secondary">
-                    {job.type}
-                  </Typography>
-
-                  {job.department && (
-                    <Typography variant="body2" color="text.secondary">
-                      {job.department}
+                  <Box className="job-meta">
+                    <LocationOnOutlinedIcon fontSize="small" />
+                    <Typography variant="body2">
+                      {job.location || 'Location not specified'}
                     </Typography>
-                  )}
+                  </Box>
+
+                  <Typography className="job-description">
+                    {job.description}
+                  </Typography>
                 </CardContent>
 
-                <CardActions>
-                  <Button size="small" onClick={() => onJobSelect(job)}>
+                <CardActions className="job-card-actions">
+                  <Button
+                    onClick={() => onJobSelect(job)}
+                    className="details-button"
+                    endIcon={<ArrowForwardIcon />}
+                  >
                     View Details
                   </Button>
 
                   <Button
-                    size="small"
                     variant="contained"
                     onClick={() => onApplyClick(job)}
+                    className="apply-button"
                   >
-                    Apply
+                    Apply Now
                   </Button>
                 </CardActions>
+
               </Card>
             </Grid>
           ))}
@@ -180,11 +223,13 @@ JobList.propTypes = {
       type: PropTypes.string,
       department: PropTypes.string,
       description: PropTypes.string,
-      createdAt: PropTypes.string,
+      createdAt: PropTypes.string
     })
   ).isRequired,
+  searchTerm: PropTypes.string.isRequired,
+  onSearchTermChange: PropTypes.func.isRequired,
   onJobSelect: PropTypes.func.isRequired,
-  onApplyClick: PropTypes.func.isRequired,
+  onApplyClick: PropTypes.func.isRequired
 };
 
 export default JobList;

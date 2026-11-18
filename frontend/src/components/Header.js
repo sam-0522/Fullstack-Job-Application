@@ -1,72 +1,118 @@
 
-import React from 'react';
+import PropTypes from 'prop-types';
+
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 
-const Header = ({ companyName = 'CareerConnect' }) => {
+const Header = ({
+  companyName = 'CareerConnect',
+  onPostJobClick,
+  admin,
+  onLogoutClick,
+  onApplicationsClick,
+  onHomeClick,
+  onFindJobsClick,
+  onCategoriesClick
+}) => {
   return (
-    <AppBar
-      position="static"
-      elevation={2}
-      sx={{
-        backgroundColor: '#1565c0',
-        color: '#ffffff',
-      }}
-    >
-      <Toolbar
-        sx={{
-          minHeight: { xs: 64, sm: 76 },
-          px: { xs: 2, sm: 4 },
-          gap: 1.5,
-        }}
-      >
-        {/* Text-based brand logo */}
-        <Box
-          sx={{
-            width: 42,
-            height: 42,
-            borderRadius: 2,
-            backgroundColor: '#ffffff',
-            color: '#1565c0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: 18,
-            flexShrink: 0,
-          }}
-        >
-          CC
-        </Box>
+    <AppBar position="sticky" elevation={0} className="main-header">
+      <Container maxWidth="lg">
+        <Toolbar disableGutters className="header-toolbar">
 
-        <Box>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontWeight: 700,
-              lineHeight: 1.3,
-              fontSize: { xs: '1.05rem', sm: '1.3rem' },
-            }}
-          >
-            {companyName}
-          </Typography>
+          <Box className="brand-section">
+            <Box className="brand-logo">CC</Box>
+            <Box>
+              <Typography className="brand-name">
+                {companyName}
+              </Typography>
+              <Typography className="brand-tagline">
+                Find opportunities. Build your future.
+              </Typography>
+            </Box>
+          </Box>
 
-          <Typography
-            variant="caption"
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              color: 'rgba(255,255,255,0.85)',
-            }}
-          >
-            Find opportunities. Build your future.
-          </Typography>
-        </Box>
-      </Toolbar>
+          <Box className="desktop-navigation">
+            <Button
+              onClick={onHomeClick}
+              className="nav-link"
+            >
+              Home
+            </Button>
+
+            <Button
+              onClick={onFindJobsClick}
+              className="nav-link"
+            >
+              Find Jobs
+            </Button>
+
+            <Button
+              onClick={onCategoriesClick}
+              className="nav-link"
+            >
+              Categories
+            </Button>
+          </Box>
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {admin && (
+              <>
+                <Typography
+                  variant="body2"
+                  sx={{ display: { xs: 'none', sm: 'block' } }}
+                >
+                  Admin: {admin.email}
+                </Typography>
+
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={onApplicationsClick}
+                >
+                  Applications
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={onLogoutClick}
+                >
+                  Logout
+                </Button>
+              </>
+            )}
+
+            <Button
+              variant="contained"
+              onClick={onPostJobClick}
+              className="employer-button"
+            >
+              Post a Job
+            </Button>
+          </Box>
+
+        </Toolbar>
+      </Container>
     </AppBar>
   );
+};
+
+Header.propTypes = {
+  companyName: PropTypes.string,
+  onPostJobClick: PropTypes.func.isRequired,
+  admin: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    role: PropTypes.string
+  }),
+  onLogoutClick: PropTypes.func,
+  onApplicationsClick: PropTypes.func,
+  onHomeClick: PropTypes.func.isRequired,
+  onFindJobsClick: PropTypes.func.isRequired,
+  onCategoriesClick: PropTypes.func.isRequired
 };
 
 export default Header;

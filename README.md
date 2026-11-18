@@ -1,490 +1,293 @@
-# Job Application Portal
+# CareerConnect – Job Portal
 
-<div align="center">
+A full-stack job portal built using the MERN stack. CareerConnect allows users to explore job opportunities, search and filter listings, view job details, and submit applications. Administrators can log in, post jobs, and manage candidate applications through a protected dashboard.
 
-![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js)
-![React](https://img.shields.io/badge/React-18.x-blue?logo=react)
-![MongoDB](https://img.shields.io/badge/MongoDB-7.x-green?logo=mongodb)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
-
-A modern, production-ready job application platform built with the MERN stack (MongoDB, Express, React, Node.js).
-
-[Features](#features) • [Tech Stack](#technology-stack) • [Quick Start](#quick-start) • [API Docs](docs/API.md) • [Contributing](CONTRIBUTING.md)
-
-</div>
-
----
-
-## Overview
-
-This is a fully customizable, enterprise-grade job application platform that provides a complete solution for managing job postings and candidate applications. Built with modern technologies and best practices, it's ready for production deployment while remaining easy to customize for your specific needs.
-
-### Key Highlights
-
-- **Full-Stack Solution:** Complete backend API and responsive frontend
-- **Production-Ready:** Security hardening, rate limiting, input validation, and comprehensive error handling
-- **Highly Customizable:** Easy branding and feature configuration via environment variables
-- **Docker Support:** Containerized deployment with Docker Compose
-- **API-First Design:** RESTful API with comprehensive documentation
-- **Modern UI:** Built with Material UI for a polished, responsive experience
-- **Developer-Friendly:** ESLint, Prettier, testing setup, and detailed documentation
-
----
+> This project is a customized extension of the original [UNC-GDSC Fullstack Job Application](https://github.com/UNC-GDSC/Fullstack-Job-Application) repository.
 
 ## Features
 
-### Core Functionality
+### Job Seeker Features
+- Browse available job opportunities.
+- Search jobs by title, skill, location, and department.
+- Filter jobs by employment type.
+- Sort job listings.
+- View detailed job descriptions.
+- Submit applications with candidate information, resume links, and cover letters.
+- Explore job categories by department.
 
-- **Job Management**
-  - Create, read, update, and delete job postings
-  - Filter jobs by type and department
-  - Pagination support for large datasets
-  - Search and advanced filtering
+### Admin Features
+- Secure administrator login using email and password.
+- JWT-based authentication.
+- Protected job management routes.
+- Post new job opportunities.
+- View submitted candidate applications.
+- Review candidate details, resume links, and cover letters.
+- Delete applications through the admin dashboard.
+- Admin logout functionality.
 
-- **Application Management**
-  - Submit applications with resume links and cover letters
-  - View and manage candidate applications
-  - Application filtering by job
-  - Email validation and URL verification
-
-### Technical Features
-
-- **Security**
-  - Helmet.js for HTTP header security
-  - CORS with configurable origins
-  - Rate limiting (100 requests per 15 minutes)
-  - MongoDB injection protection
-  - Input validation and sanitization
-  - Request size limits
-
-- **Developer Experience**
-  - Comprehensive API documentation
-  - Jest and React Testing Library setup
-  - ESLint and Prettier configuration
-  - Hot reload in development
-  - Docker and Docker Compose support
-  - Sample test files included
-
-- **Production Features**
-  - Environment-based configuration
-  - Request logging with Morgan
-  - Graceful error handling
-  - Health check endpoints
-  - CI/CD pipeline with GitHub Actions
-  - Graceful shutdown handling
-
----
+### Backend and Security
+- REST API built with Express.js.
+- MongoDB database integration using Mongoose.
+- Password hash verification using bcryptjs.
+- JWT authentication and authorization.
+- Request validation using express-validator.
+- CORS configuration.
+- Helmet security headers.
+- Rate limiting.
+- MongoDB sanitization.
+- Environment-based configuration.
 
 ## Technology Stack
 
-### Backend
-- **Runtime:** Node.js 20.x
-- **Framework:** Express 4.x
-- **Database:** MongoDB 7.x with Mongoose ODM
-- **Security:** Helmet, CORS, express-rate-limit, express-mongo-sanitize
-- **Validation:** express-validator
-- **Logging:** Morgan
-- **Testing:** Jest, Supertest
+| Area | Technologies |
+|---|---|
+| Frontend | React 18, JavaScript |
+| UI | Material UI (MUI) |
+| HTTP Client | Axios |
+| Backend | Node.js, Express.js |
+| Database | MongoDB Atlas, Mongoose |
+| Authentication | JSON Web Tokens (JWT) |
+| Password Security | bcryptjs |
+| Validation | express-validator |
+| Security | Helmet, CORS, express-rate-limit |
+| Version Control | Git and GitHub |
 
-### Frontend
-- **Framework:** React 18.x
-- **UI Library:** Material UI 5.x
-- **HTTP Client:** Axios
-- **Build Tool:** Create React App
-- **Testing:** Jest, React Testing Library
+## Project Structure
 
-### DevOps
-- **Containerization:** Docker, Docker Compose
-- **CI/CD:** GitHub Actions
-- **Code Quality:** ESLint, Prettier
-- **Version Control:** Git
-
----
-
-## Directory Structure
-
-```
-Fullstack-Job-Application/
-├── backend/                  # Node.js backend
-│   ├── config/              # Database configuration
+```text
+UNC-JobPortal/
+├── backend/
+│   ├── config/
 │   │   └── db.js
-│   ├── models/              # Mongoose models
+│   ├── middleware/
+│   │   └── auth.js
+│   ├── models/
 │   │   ├── Job.js
 │   │   └── Application.js
-│   ├── routes/              # API routes
+│   ├── routes/
+│   │   ├── auth.js
 │   │   ├── jobs.js
 │   │   └── applications.js
-│   ├── __tests__/           # Backend tests
-│   ├── .env.example         # Environment variables template
-│   ├── Dockerfile           # Backend Docker configuration
-│   ├── jest.config.js       # Jest configuration
+│   ├── generatePasswordHash.js
+│   ├── .env.example
 │   ├── package.json
-│   └── server.js            # Express server entry point
-├── frontend/                # React frontend
-│   ├── public/              # Static files
-│   │   └── index.html
+│   └── server.js
+│
+├── frontend/
+│   ├── public/
 │   ├── src/
-│   │   ├── components/      # React components
+│   │   ├── components/
 │   │   │   ├── Header.js
 │   │   │   ├── Footer.js
 │   │   │   ├── JobList.js
 │   │   │   ├── JobForm.js
-│   │   │   └── ApplicationForm.js
+│   │   │   ├── ApplicationForm.js
+│   │   │   ├── AdminLogin.js
+│   │   │   └── AdminApplications.js
 │   │   ├── styles/
 │   │   │   └── main.css
 │   │   ├── App.js
-│   │   ├── config.js        # Frontend configuration
+│   │   ├── config.js
 │   │   └── index.js
-│   ├── .env.example         # Environment variables template
-│   ├── Dockerfile           # Frontend Docker configuration
+│   ├── .env.example
 │   └── package.json
-├── docs/                    # Documentation
-│   └── API.md              # API documentation
-├── .github/
-│   └── workflows/
-│       └── ci.yml          # CI/CD pipeline
-├── docker-compose.yml       # Docker Compose configuration
-├── package.json            # Root package.json for scripts
-├── .eslintrc.json          # ESLint configuration
-├── .prettierrc             # Prettier configuration
+│
+├── docs/
 ├── .gitignore
-├── CONTRIBUTING.md
 ├── LICENSE
 └── README.md
 ```
 
----
-
-## Quick Start
+## Getting Started
 
 ### Prerequisites
 
-- **Node.js** v18 or higher
-- **npm** v9 or higher
-- **MongoDB** (local instance or MongoDB Atlas)
-- **Docker** (optional, for containerized deployment)
+Install the following:
 
-### Option 1: Local Development
+- Node.js 18 or higher
+- npm 9 or higher
+- MongoDB Atlas account or local MongoDB installation
+- Git
 
-#### 1. Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/UNC-GDSC/Fullstack-Job-Application.git
 cd Fullstack-Job-Application
 ```
 
-#### 2. Install All Dependencies
+### 2. Backend Setup
 
-```bash
-npm run install:all
-```
-
-#### 3. Backend Setup
+Open a terminal:
 
 ```bash
 cd backend
-cp .env.example .env
-# Edit .env with your MongoDB connection string
-npm run dev
+npm install
 ```
 
-**Backend Environment Variables:**
+Create your environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configure `backend/.env` with your own values:
+
 ```env
 PORT=5000
 NODE_ENV=development
-MONGO_URI=mongodb://localhost:27017/job_applications_db
-COMPANY_NAME=Your Company Name
-COMPANY_LOGO_URL=https://example.com/logo.png
-ALLOWED_ORIGINS=http://localhost:3000
+
+MONGO_URI=your_mongodb_connection_string
+
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+
+JWT_SECRET=your_private_jwt_secret
+JWT_EXPIRE=7d
+
+ADMIN_EMAIL=your_admin_email
+ADMIN_PASSWORD_HASH=your_bcrypt_password_hash
+
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 ```
 
-#### 4. Frontend Setup
+Important:
+- Replace the MongoDB URI with your own MongoDB Atlas connection string.
+- Configure the administrator email and bcrypt password hash.
+- Use a strong, private JWT secret.
+- Never commit `.env` or share your credentials publicly.
 
-In a new terminal:
+Start the backend:
+
+```bash
+npm run dev
+```
+
+The backend runs at:
+
+`http://localhost:5000`
+
+### 3. Frontend Setup
+
+Open a second terminal:
 
 ```bash
 cd frontend
-cp .env.example .env
-# Edit .env if needed
+npm install
+```
+
+Create the frontend environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Configure `frontend/.env`:
+
+```env
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_API_TIMEOUT=10000
+REACT_APP_COMPANY_NAME=CareerConnect
+REACT_APP_ENV=development
+```
+
+Start the frontend:
+
+```bash
 npm start
 ```
 
-**Frontend Environment Variables:**
-```env
-REACT_APP_API_URL=http://localhost:5000
-REACT_APP_COMPANY_NAME=Your Company Name
-REACT_APP_COMPANY_LOGO_URL=https://example.com/logo.png
+The application normally opens at:
+
+`http://localhost:3000`
+
+### 4. Access the Application
+
+| Service | URL |
+|---|---|
+| Frontend | http://localhost:3000 |
+| Backend | http://localhost:5000 |
+| API Health Check | http://localhost:5000/api/health |
+| Jobs API | http://localhost:5000/api/jobs |
+
+Keep the backend and frontend running in separate terminals.
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint | Access |
+|---|---|---|
+| POST | `/api/auth/login` | Public |
+
+### Jobs
+
+| Method | Endpoint | Access |
+|---|---|---|
+| GET | `/api/jobs` | Public |
+| GET | `/api/jobs/:id` | Public |
+| POST | `/api/jobs` | Admin |
+| PUT | `/api/jobs/:id` | Admin |
+| DELETE | `/api/jobs/:id` | Admin |
+
+### Applications
+
+| Method | Endpoint | Access |
+|---|---|---|
+| POST | `/api/applications` | Public |
+| GET | `/api/applications` | Admin |
+| GET | `/api/applications/:id` | Admin |
+| DELETE | `/api/applications/:id` | Admin |
+
+Protected endpoints require a valid JWT bearer token.
+
+### Health Check
+
+```http
+GET /api/health
 ```
 
-#### 5. Access the Application
-
-- **Frontend:** http://localhost:3000
-- **Backend API:** http://localhost:5000
-- **Health Check:** http://localhost:5000/api/health
-
-### Option 2: Docker Deployment
-
-```bash
-# Start all services (MongoDB, Backend, Frontend)
-npm run docker:up
-
-# View logs
-npm run docker:logs
-
-# Stop all services
-npm run docker:down
-```
-
-**Access after Docker deployment:**
-- **Frontend:** http://localhost
-- **Backend API:** http://localhost:5000
-
----
-
-## Development
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Backend tests only
-npm run test:backend
-
-# Frontend tests only
-npm run test:frontend
-
-# Frontend tests with coverage
-cd frontend && npm run test:coverage
-```
-
-### Code Quality
-
-```bash
-# Format all code
-npm run format
-
-# Check formatting
-npm run format:check
-
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-```
-
-### Available Scripts
-
-From the root directory:
-
-- `npm run install:all` - Install all dependencies
-- `npm run dev` - Run both frontend and backend in development mode
-- `npm run dev:backend` - Run backend only
-- `npm run dev:frontend` - Run frontend only
-- `npm test` - Run all tests
-- `npm run lint` - Lint all code
-- `npm run format` - Format all code
-- `npm run docker:up` - Start Docker containers
-- `npm run docker:down` - Stop Docker containers
-
----
-
-## API Documentation
-
-Comprehensive API documentation is available in [docs/API.md](docs/API.md).
-
-### Quick API Reference
-
-#### Jobs Endpoints
-
-- `GET /api/jobs` - Get all jobs (with pagination and filtering)
-- `GET /api/jobs/:id` - Get single job
-- `POST /api/jobs` - Create new job
-- `PUT /api/jobs/:id` - Update job
-- `DELETE /api/jobs/:id` - Delete job
-
-#### Applications Endpoints
-
-- `GET /api/applications` - Get all applications
-- `GET /api/applications/:id` - Get single application
-- `POST /api/applications` - Submit application
-- `DELETE /api/applications/:id` - Delete application
-
-#### Health Check
-
-- `GET /api/health` - API health status
-
----
-
-## Customization
-
-### Branding
-
-Update environment variables in `.env` files:
-
-**Backend (`backend/.env`):**
-```env
-COMPANY_NAME=Acme Corporation
-COMPANY_LOGO_URL=https://acme.com/logo.png
-```
-
-**Frontend (`frontend/.env`):**
-```env
-REACT_APP_COMPANY_NAME=Acme Corporation
-REACT_APP_COMPANY_LOGO_URL=https://acme.com/logo.png
-```
-
-### UI Customization
-
-- Modify components in `frontend/src/components/`
-- Update Material UI theme in `frontend/src/App.js`
-- Adjust styles in `frontend/src/styles/main.css`
-
-### Backend Customization
-
-- Extend models in `backend/models/`
-- Add new routes in `backend/routes/`
-- Modify validation rules in route files
-- Add middleware in `backend/server.js`
-
----
-
-## Deployment
-
-### Environment Setup
-
-1. Set `NODE_ENV=production` in backend `.env`
-2. Configure production MongoDB URI
-3. Set proper CORS origins
-4. Configure secure secrets
-
-### Deployment Options
-
-- **Heroku:** Deploy backend and frontend separately
-- **Vercel/Netlify:** Frontend static hosting
-- **AWS/Azure/GCP:** Full-stack deployment with managed MongoDB
-- **Docker:** Use provided Docker Compose configuration
-- **VPS:** Deploy using PM2 or similar process manager
-
----
-
-## Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Quick Contribution Steps
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## Testing
-
-### Backend Tests
-
-```bash
-cd backend
-npm test                 # Run tests
-npm run test:watch      # Watch mode
-```
-
-### Frontend Tests
-
-```bash
-cd frontend
-npm test                # Run tests
-npm run test:watch     # Watch mode
-npm run test:coverage  # Generate coverage report
-```
-
----
-
-## Security
-
-- Input validation on all endpoints
-- Rate limiting to prevent abuse
-- MongoDB injection protection
-- Helmet.js for security headers
-- CORS configuration
-- Environment variable protection
-
-**Note:** This application should have authentication/authorization implemented before production use.
-
----
-
-## Troubleshooting
-
-### MongoDB Connection Issues
-
-- Ensure MongoDB is running
-- Check `MONGO_URI` in `.env`
-- For MongoDB Atlas, whitelist your IP
-
-### Port Conflicts
-
-- Change `PORT` in backend `.env`
-- Update frontend API URL accordingly
-
-### Docker Issues
-
-```bash
-# Restart containers
-npm run docker:down
-npm run docker:up
-
-# View logs
-npm run docker:logs
-
-# Rebuild containers
-docker-compose up --build
-```
-
----
+For more API details, refer to the project's API documentation in the `docs/` directory.
+
+## Application Workflow
+
+1. A visitor opens CareerConnect and browses available jobs.
+2. The visitor searches, filters, or sorts job listings.
+3. The visitor opens a job and submits an application.
+4. The application is stored in MongoDB.
+5. An administrator logs in.
+6. The administrator posts job opportunities and reviews submitted applications.
+7. The administrator can manage applications from the dashboard.
+
+## Security Notes
+
+- Passwords are verified against bcrypt hashes.
+- JWT tokens protect administrator-only endpoints.
+- Environment variables store sensitive configuration.
+- CORS restricts permitted frontend origins.
+- Request validation and rate limiting help protect API endpoints.
+
+This project is intended as a learning and portfolio project. Additional security review, automated testing, deployment configuration, and production hardening are recommended before real-world production use.
+
+## Future Improvements
+
+- Candidate registration and login.
+- Application status tracking.
+- Email notifications.
+- Advanced job filtering.
+- Pagination and improved application management.
+- Cloud-based resume upload.
+- Automated testing and deployment.
+
+## Acknowledgements
+
+- [UNC-Chapel Hill Google Developer Student Club](https://github.com/UNC-GDSC) for the original open-source project.
+- [React](https://react.dev/)
+- [Material UI](https://mui.com/)
+- [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
+- [MongoDB](https://www.mongodb.com/)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Authors
-
-Created and maintained by the **UNC-Chapel Hill Google Developer Student Club (GDSC)** team.
-
-- **Organization:** [UNC GDSC](https://github.com/UNC-GDSC)
-- **Website:** [GDSC UNC](https://gdsc.community.dev/university-of-north-carolina-at-chapel-hill/)
-
----
-
-## Acknowledgments
-
-- Material UI for the component library
-- MongoDB for the database solution
-- The open-source community for various packages and tools
-
----
-
-## Support
-
-- **Issues:** [GitHub Issues](https://github.com/UNC-GDSC/Fullstack-Job-Application/issues)
-- **Documentation:** [API Docs](docs/API.md) | [Contributing Guide](CONTRIBUTING.md)
-- **Community:** Join our GDSC community
-
----
-
-<div align="center">
-
-Made with ❤️ by UNC GDSC
-
-[⬆ back to top](#job-application-portal)
-
-</div>
+This project retains the MIT License of the original repository. See the [LICENSE](LICENSE) file for details.

@@ -1,13 +1,14 @@
+
 const express = require('express');
 const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const Application = require('../models/Application');
+const Job = require('../models/Job');
+const protect = require('../middleware/auth');
 
-/**
- * Middleware to handle validation errors
- */
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({
       status: 'error',
@@ -18,27 +19,27 @@ const handleValidationErrors = (req, res, next) => {
       })),
     });
   }
+
   next();
 };
 
-/**
- * @route   GET /api/applications
- * @desc    Get all applications with optional filtering and pagination
- * @access  Public (should be protected in production)
- */
-router.get('/', async (req, res, next) => {
+// ADMIN ONLY: View all applications
+router.get('/', protect, async (req, res, next) => {
   try {
     const { job, limit = 50, page = 1 } = req.query;
+
+    const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 100);
+    const safePage = Math.max(parseInt(page, 10) || 1, 1);
 
     const query = {};
     if (job) query.job = job;
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (safePage - 1) * safeLimit;
 
     const applications = await Application.find(query)
       .populate('job', 'title department location')
       .sort({ appliedAt: -1 })
-      .limit(parseInt(limit))
+      .limit(safeLimit)
       .skip(skip);
 
     const total = await Application.countDocuments(query);
@@ -47,8 +48,8 @@ router.get('/', async (req, res, next) => {
       status: 'success',
       results: applications.length,
       total,
-      page: parseInt(page),
-      totalPages: Math.ceil(total / parseInt(limit)),
+      page: safePage,
+      totalPages: Math.ceil(total / safeLimit),
       data: applications,
     });
   } catch (error) {
@@ -56,18 +57,16 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-/**
- * @route   GET /api/applications/:id
- * @desc    Get single application by ID
- * @access  Public (should be protected in production)
- */
+// ADMIN ONLY: View one application
 router.get(
   '/:id',
+  protect,
   [param('id').isMongoId().withMessage('Invalid application ID')],
   handleValidationErrors,
   async (req, res, next) => {
     try {
-      const application = await Application.findById(req.params.id).populate('job');
+      const application = await Application.findById(req.params.id)
+        .populate('job');
 
       if (!application) {
         return res.status(404).json({
@@ -76,21 +75,14 @@ router.get(
         });
       }
 
-      res.json({
-        status: 'success',
-        data: application,
-      });
+      res.json({ status: 'success', data: application });
     } catch (error) {
       next(error);
     }
   }
 );
 
-/**
- * @route   POST /api/applications
- * @desc    Submit a new job application
- * @access  Public
- */
+// PUBLIC: Submit a job application
 router.post(
   '/',
   [
@@ -113,7 +105,7 @@ router.post(
       .notEmpty()
       .withMessage('Resume URL is required')
       .isURL()
-      .withMessage('Please provide a valid URL for your resume'),
+      .withMessage('Please provide a valid resume URL'),
     body('coverLetter')
       .optional()
       .trim()
@@ -123,11 +115,16 @@ router.post(
   handleValidationErrors,
   async (req, res, next) => {
     try {
-      const { job, candidateName, candidateEmail, resumeUrl, coverLetter } = req.body;
+      const {
+        job,
+        candidateName,
+        candidateEmail,
+        resumeUrl,
+        coverLetter,
+      } = req.body;
 
-      // Check if job exists
-      const Job = require('../models/Job');
       const jobExists = await Job.findById(job);
+
       if (!jobExists) {
         return res.status(404).json({
           status: 'error',
@@ -144,7 +141,10 @@ router.post(
       });
 
       const savedApplication = await newApplication.save();
-      const populatedApplication = await savedApplication.populate('job', 'title department');
+      const populatedApplication = await savedApplication.populate(
+        'job',
+        'title department'
+      );
 
       res.status(201).json({
         status: 'success',
@@ -157,18 +157,17 @@ router.post(
   }
 );
 
-/**
- * @route   DELETE /api/applications/:id
- * @desc    Delete an application
- * @access  Public (should be protected in production)
- */
+// ADMIN ONLY: Delete an application
 router.delete(
   '/:id',
+  protect,
   [param('id').isMongoId().withMessage('Invalid application ID')],
   handleValidationErrors,
   async (req, res, next) => {
     try {
-      const deletedApplication = await Application.findByIdAndDelete(req.params.id);
+      const deletedApplication = await Application.findByIdAndDelete(
+        req.params.id
+      );
 
       if (!deletedApplication) {
         return res.status(404).json({

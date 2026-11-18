@@ -5,7 +5,7 @@ import axios from 'axios';
 import config from '../config';
 import { Box, TextField, Button, Typography, MenuItem } from '@mui/material';
 
-const JobForm = ({ onJobPosted, onCancel }) => {
+const JobForm = ({ onJobPosted, onCancel, token }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -39,9 +39,14 @@ const JobForm = ({ onJobPosted, onCancel }) => {
 
     try {
       const res = await axios.post(
-        config.backendUrl + '/api/jobs',
-        payload
-      );
+  config.backendUrl + '/api/jobs',
+  payload,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
       const savedJob = res?.data?.data;
 
@@ -151,7 +156,8 @@ const JobForm = ({ onJobPosted, onCancel }) => {
 
 JobForm.propTypes = {
   onJobPosted: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired
 };
 
 export default JobForm;
